@@ -5,7 +5,6 @@
 
 #include <QDialog>
 #include <QString>
-#include <QListWidgetItem>
 
 class Binding {
 public:
@@ -59,7 +58,7 @@ private slots:
 	void cancelClicked();
 
 private:
-        void save();
+	void save();
 
 	Ui::Settings *ui;
 };

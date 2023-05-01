@@ -4,6 +4,8 @@
 #include <obs-module.h>
 #include <obs.hpp>
 
+#include <string>
+
 #include "settings.hpp"
 #include "ui_settings.h"
 
@@ -119,8 +121,7 @@ obs_data_t *Binding::toJSON() const
 	return json;
 }
 
-Settings::Settings(QWidget *parent)
-	: QDialog(parent), ui(new Ui::Settings)
+Settings::Settings(QWidget *parent) : QDialog(parent), ui(new Ui::Settings)
 {
 	ui->setupUi(this);
 
@@ -210,8 +211,8 @@ void Settings::save()
 
 	OBSDataArrayAutoRelease bindingsArr = obs_data_array_create();
 	for (auto binding : bindings) {
-                OBSDataAutoRelease bindingObj = binding.toJSON();
-                obs_data_array_push_back(bindingsArr, bindingObj);
+		OBSDataAutoRelease bindingObj = binding.toJSON();
+		obs_data_array_push_back(bindingsArr, bindingObj);
 	}
 
 	OBSDataAutoRelease bindingsObj = obs_data_create();
@@ -220,17 +221,16 @@ void Settings::save()
 	obs_data_set_array(bindingsObj, BINDINGS_JSON_KEY, bindingsArr);
 
 	// serialize and save
-	const char *json = obs_data_get_json(bindingsObj);
-        QByteArray jsonByteArr = QByteArray::fromBase64(json);
-	const char *b64 = jsonByteArr.constData();
-	config_set_string(config, CFG_SECTION, CFG_BINDINGS_JSON, b64);
+	QByteArray json = obs_data_get_json(bindingsObj);
+	std::string b64 = json.toBase64().toStdString();
+	config_set_string(config, CFG_SECTION, CFG_BINDINGS_JSON, b64.c_str());
 
 	config_save(config);
 }
 
 void Settings::toggleVisible(bool checked)
 {
-        UNUSED_PARAMETER(checked);
+	UNUSED_PARAMETER(checked);
 	setVisible(!isVisible());
 }
 
@@ -243,25 +243,25 @@ void Settings::connectToUDSChanged(int newValue)
 
 void Settings::okClicked()
 {
-        enableReceiver = ui->enableReceiver->isChecked();
-        connectToUDS = ui->connectToUDS->isChecked();
-        udsAddr = ui->udsAddr->text();
-        udsPort = ui->udsPort->value();
-        listenAddr = ui->localAddr->text();
-        listenPort = ui->localPort->value();
-        validateChecksums = ui->validateChecksums->isChecked();
-        save();
+	enableReceiver = ui->enableReceiver->isChecked();
+	connectToUDS = ui->connectToUDS->isChecked();
+	udsAddr = ui->udsAddr->text();
+	udsPort = ui->udsPort->value();
+	listenAddr = ui->localAddr->text();
+	listenPort = ui->localPort->value();
+	validateChecksums = ui->validateChecksums->isChecked();
+	save();
 }
 
 void Settings::cancelClicked()
 {
-        // put everything back
-        ui->enableReceiver->setChecked(enableReceiver);
-        ui->connectToUDS->setChecked(connectToUDS);
-        connectToUDSChanged(ui->connectToUDS->isChecked());
-        ui->udsAddr->setText(udsAddr);
-        ui->udsPort->setValue(udsPort);
-        ui->localAddr->setText(listenAddr);
-        ui->localPort->setValue(listenPort);
-        ui->validateChecksums->setChecked(validateChecksums);
+	// put everything back
+	ui->enableReceiver->setChecked(enableReceiver);
+	ui->connectToUDS->setChecked(connectToUDS);
+	connectToUDSChanged(ui->connectToUDS->isChecked());
+	ui->udsAddr->setText(udsAddr);
+	ui->udsPort->setValue(udsPort);
+	ui->localAddr->setText(listenAddr);
+	ui->localPort->setValue(listenPort);
+	ui->validateChecksums->setChecked(validateChecksums);
 }
