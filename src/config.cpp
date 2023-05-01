@@ -9,8 +9,8 @@
 
 #define CFG_RECEIVER_RUNNING "ReceiverRunning"
 #define CFG_CONNECT_TO_UDS "ConnectToUDS"
-#define CFG_UDS_ADDR "UDSAddr"
-#define CFG_UDS_PORT "UDSPort"
+#define CFG_UDS_ADDR "udsAddr"
+#define CFG_UDS_PORT "udsPort"
 #define CFG_LISTEN_ADDR "ListenAddr"
 #define CFG_LISTEN_PORT "ListenPort"
 #define CFG_VALIDATE_CHECKSUMS "ValidateChecksums"
@@ -114,10 +114,10 @@ obs_data_t *Binding::toJSON() const
 Config::Config()
 {
 	// set up defaults - if a config is found, these will be overwritten later
-	receiverRunning = false;
+	enableReceiver = false;
 	connectToUDS = false;
-	UDSAddr = "";
-	UDSPort = 0;
+	udsAddr = "";
+	udsPort = 0;
 	listenAddr = "0.0.0.0";
 	listenPort = 21000;
 	validateChecksums = true;
@@ -140,11 +140,11 @@ Config::Config()
 	}
 
 	// load from config
-	receiverRunning =
+	enableReceiver =
 		config_get_bool(config, CFG_SECTION, CFG_RECEIVER_RUNNING);
 	connectToUDS = config_get_bool(config, CFG_SECTION, CFG_CONNECT_TO_UDS);
-	UDSAddr = config_get_string(config, CFG_SECTION, CFG_UDS_ADDR);
-	UDSPort = config_get_uint(config, CFG_SECTION, CFG_UDS_PORT);
+	udsAddr = config_get_string(config, CFG_SECTION, CFG_UDS_ADDR);
+	udsPort = config_get_uint(config, CFG_SECTION, CFG_UDS_PORT);
 	listenAddr = config_get_string(config, CFG_SECTION, CFG_LISTEN_ADDR);
 	listenPort = config_get_uint(config, CFG_SECTION, CFG_LISTEN_PORT);
 	validateChecksums =
@@ -174,11 +174,11 @@ void Config::save()
 	config_t *config = obs_frontend_get_global_config();
 
 	config_set_bool(config, CFG_SECTION, CFG_RECEIVER_RUNNING,
-			receiverRunning);
+			enableReceiver);
 	config_set_bool(config, CFG_SECTION, CFG_CONNECT_TO_UDS, connectToUDS);
 	config_set_string(config, CFG_SECTION, CFG_UDS_ADDR,
-			  UDSAddr.toUtf8().constData());
-	config_set_uint(config, CFG_SECTION, CFG_UDS_PORT, UDSPort);
+			  udsAddr.toUtf8().constData());
+	config_set_uint(config, CFG_SECTION, CFG_UDS_PORT, udsPort);
 	config_set_string(config, CFG_SECTION, CFG_LISTEN_ADDR,
 			  listenAddr.toUtf8().constData());
 	config_set_uint(config, CFG_SECTION, CFG_LISTEN_PORT, listenPort);

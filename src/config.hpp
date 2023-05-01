@@ -34,11 +34,11 @@ public:
 	Config();
 	void save();
 
-	bool receiverRunning;
+	bool enableReceiver;
 
 	bool connectToUDS;
-	QString UDSAddr;
-	uint16_t UDSPort;
+	QString udsAddr;
+	uint16_t udsPort;
 	QString listenAddr;
 	uint16_t listenPort;
 	bool validateChecksums;
