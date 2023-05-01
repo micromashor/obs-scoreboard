@@ -21,12 +21,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QMainWindow>
 #include <QAction>
+#include <QMenu>
+
+#include "forms/settings.hpp"
 
 #include "plugin-macros.generated.h"
 
 OBS_DECLARE_MODULE()
 
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
+
+Settings *settings;
 
 const char *obs_module_name()
 {
@@ -42,10 +47,28 @@ bool obs_module_load()
 {
 	blog(LOG_INFO, "Hello! (%s)", PLUGIN_VERSION);
 
+	QMainWindow *mainWindow = (QMainWindow *)obs_frontend_get_main_window();
+	if (!mainWindow)
+		return true;
+
+        QMenu *menu = new QMenu(T("OBSScoreboard.Menu"), mainWindow);
+
+        obs_frontend_push_ui_translation(obs_module_get_string);
+        settings = new Settings(mainWindow);
+        obs_frontend_pop_ui_translation();
+        QAction *settingsAction = new QAction(T("OBSScoreboard.Menu.Settings"), menu);
+        QObject::connect(settingsAction, &QAction::triggered, settings, &Settings::toggleVisible);
+        menu->addAction(settingsAction);
+
+        QAction *toolsQAction = (QAction *)obs_frontend_add_tools_menu_qaction(T("OBSScoreboard.Menu"));
+        toolsQAction->setMenu(menu);
+
 	return true;
 }
 
 void obs_module_unload()
 {
+        delete settings;
+
 	blog(LOG_INFO, "Goodbye!");
 }

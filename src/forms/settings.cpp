@@ -1,9 +1,13 @@
 #include <obs-frontend-api.h>
 #include <util/dstr.h>
+#include <util/config-file.h>
+#include <obs-module.h>
+#include <obs.hpp>
 
-#include "config.hpp"
+#include "settings.hpp"
+#include "ui_settings.h"
 
-#include "plugin-macros.generated.h"
+#include "../plugin-macros.generated.h"
 
 #define CFG_SECTION "OBSScoreboard"
 
@@ -32,6 +36,10 @@
 #define BINDING_INVERT_BOOL "invert_bool"
 #define BINDING_VALUE_IF_TRUE "value_if_true"
 #define BINDING_VALUE_IF_FALSE "value_if_false"
+
+#define USE_AS_STR 0
+#define USE_AS_BOOL 1
+#define USE_AS_SWITCH 2
 
 Binding::Binding()
 {
@@ -111,8 +119,22 @@ obs_data_t *Binding::toJSON() const
 	return json;
 }
 
-Config::Config()
+Settings::Settings(QWidget *parent)
+	: QDialog(parent), ui(new Ui::Settings)
 {
+	ui->setupUi(this);
+
+	// Remove the ? button on dialogs on Windows
+	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+	// Set up slots
+	connect(ui->connectToUDS, &QCheckBox::stateChanged, this,
+		&Settings::connectToUDSChanged);
+	connect(ui->buttonBox, &QDialogButtonBox::accepted, this,
+		&Settings::okClicked);
+	connect(ui->buttonBox, &QDialogButtonBox::rejected, this,
+		&Settings::cancelClicked);
+
 	// set up defaults - if a config is found, these will be overwritten later
 	enableReceiver = false;
 	connectToUDS = false;
@@ -153,23 +175,24 @@ Config::Config()
 	// load binding list
 	QByteArray bindingsJSON =
 		config_get_string(config, CFG_SECTION, CFG_BINDINGS_JSON);
-	obs_data_t *bindingsObj =
+	OBSDataAutoRelease bindingsObj =
 		obs_data_create_from_json(bindingsJSON.constData());
-	obs_data_array_t *bindingsArr =
+	OBSDataArrayAutoRelease bindingsArr =
 		obs_data_get_array(bindingsObj, BINDINGS_JSON_KEY);
 
 	size_t bindingsCount = obs_data_array_count(bindingsArr);
 	for (size_t i = 0; i < bindingsCount; i++) {
-		obs_data_t *item = obs_data_array_item(bindingsArr, i);
+		OBSDataAutoRelease item = obs_data_array_item(bindingsArr, i);
 		bindings.emplace_back(item);
-		obs_data_release(item);
 	}
-
-	obs_data_array_release(bindingsArr);
-	obs_data_release(bindingsObj);
 }
 
-void Config::save()
+Settings::~Settings()
+{
+	delete ui;
+}
+
+void Settings::save()
 {
 	config_t *config = obs_frontend_get_global_config();
 
@@ -185,22 +208,60 @@ void Config::save()
 	config_set_bool(config, CFG_SECTION, CFG_VALIDATE_CHECKSUMS,
 			validateChecksums);
 
-	obs_data_array_t *bindingsArr = obs_data_array_create();
+	OBSDataArrayAutoRelease bindingsArr = obs_data_array_create();
 	for (auto binding : bindings) {
+                OBSDataAutoRelease bindingObj = binding.toJSON();
+                obs_data_array_push_back(bindingsArr, bindingObj);
 	}
 
-	obs_data_t *bindingsObj = obs_data_create();
+	OBSDataAutoRelease bindingsObj = obs_data_create();
 
 	// add the array and release - the library has it from here
 	obs_data_set_array(bindingsObj, BINDINGS_JSON_KEY, bindingsArr);
-	obs_data_array_release(bindingsArr);
 
 	// serialize and save
 	const char *json = obs_data_get_json(bindingsObj);
-	const char *b64 = QByteArray::fromBase64(json).constData();
+        QByteArray jsonByteArr = QByteArray::fromBase64(json);
+	const char *b64 = jsonByteArr.constData();
 	config_set_string(config, CFG_SECTION, CFG_BINDINGS_JSON, b64);
 
-	obs_data_release(bindingsObj);
-
 	config_save(config);
+}
+
+void Settings::toggleVisible(bool checked)
+{
+        UNUSED_PARAMETER(checked);
+	setVisible(!isVisible());
+}
+
+void Settings::connectToUDSChanged(int newValue)
+{
+	bool checked = newValue;
+	ui->udsAddr->setEnabled(checked);
+	ui->udsPort->setEnabled(checked);
+}
+
+void Settings::okClicked()
+{
+        enableReceiver = ui->enableReceiver->isChecked();
+        connectToUDS = ui->connectToUDS->isChecked();
+        udsAddr = ui->udsAddr->text();
+        udsPort = ui->udsPort->value();
+        listenAddr = ui->localAddr->text();
+        listenPort = ui->localPort->value();
+        validateChecksums = ui->validateChecksums->isChecked();
+        save();
+}
+
+void Settings::cancelClicked()
+{
+        // put everything back
+        ui->enableReceiver->setChecked(enableReceiver);
+        ui->connectToUDS->setChecked(connectToUDS);
+        connectToUDSChanged(ui->connectToUDS->isChecked());
+        ui->udsAddr->setText(udsAddr);
+        ui->udsPort->setValue(udsPort);
+        ui->localAddr->setText(listenAddr);
+        ui->localPort->setValue(listenPort);
+        ui->validateChecksums->setChecked(validateChecksums);
 }

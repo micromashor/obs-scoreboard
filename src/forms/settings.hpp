@@ -1,14 +1,11 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef Settings_H
+#define Settings_H
 
-#include <obs.h>
-#include <util/config-file.h>
-#include <vector>
-#include <QListWidget>
+#include <obs.hpp>
 
-#define USE_AS_STR 0
-#define USE_AS_BOOL 1
-#define USE_AS_SWITCH 2
+#include <QDialog>
+#include <QString>
+#include <QListWidgetItem>
 
 class Binding {
 public:
@@ -29,10 +26,18 @@ public:
 	QString value_if_false;
 };
 
-class Config {
+namespace Ui {
+class Settings;
+}
+
+class Settings : public QDialog {
+	Q_OBJECT
+
 public:
-	Config();
-	void save();
+	explicit Settings(QWidget *parent);
+	~Settings();
+
+	void toggleVisible(bool checked);
 
 	bool enableReceiver;
 
@@ -44,6 +49,19 @@ public:
 	bool validateChecksums;
 
 	std::vector<Binding> bindings;
+
+private slots:
+
+	void connectToUDSChanged(int arg1);
+
+	void okClicked();
+
+	void cancelClicked();
+
+private:
+        void save();
+
+	Ui::Settings *ui;
 };
 
-#endif // CONFIG_H
+#endif // Settings_H
