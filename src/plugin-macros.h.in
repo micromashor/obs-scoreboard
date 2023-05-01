@@ -26,4 +26,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define blog(level, msg, ...) blog(level, "[" PLUGIN_NAME "] (%s) " msg, __func__, ##__VA_ARGS__)
 
+#define T(key) obs_module_text(key)
+
 #endif // PLUGINNAME_H
