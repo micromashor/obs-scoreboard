@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QMenu>
 
 #include "forms/settings.hpp"
+#include "forms/help-about.hpp"
 
 #include "plugin-macros.generated.h"
 
@@ -32,6 +33,7 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 Settings *settings;
+HelpAbout *helpAbout;
 
 const char *obs_module_name()
 {
@@ -51,24 +53,34 @@ bool obs_module_load()
 	if (!mainWindow)
 		return true;
 
-        QMenu *menu = new QMenu(T("OBSScoreboard.Menu"), mainWindow);
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	settings = new Settings(mainWindow);
+	helpAbout = new HelpAbout(mainWindow);
+	obs_frontend_pop_ui_translation();
 
-        obs_frontend_push_ui_translation(obs_module_get_string);
-        settings = new Settings(mainWindow);
-        obs_frontend_pop_ui_translation();
-        QAction *settingsAction = new QAction(T("OBSScoreboard.Menu.Settings"), menu);
-        QObject::connect(settingsAction, &QAction::triggered, settings, &Settings::toggleVisible);
-        menu->addAction(settingsAction);
+	QMenu *menu = new QMenu(T("OBSScoreboard.Menu"), mainWindow);
 
-        QAction *toolsQAction = (QAction *)obs_frontend_add_tools_menu_qaction(T("OBSScoreboard.Menu"));
-        toolsQAction->setMenu(menu);
+	QAction *settingsAction =
+		new QAction(T("OBSScoreboard.Menu.Settings"), menu);
+	QObject::connect(settingsAction, &QAction::triggered, settings,
+			 &Settings::toggleVisible);
+	menu->addAction(settingsAction);
+
+	QAction *helpAction = new QAction(T("OBSScoreboard.Menu.Help"), menu);
+	QObject::connect(helpAction, &QAction::triggered, helpAbout,
+			 &HelpAbout::toggleVisible);
+	menu->addAction(helpAction);
+
+	QAction *toolsQAction = (QAction *)obs_frontend_add_tools_menu_qaction(
+		T("OBSScoreboard.Menu"));
+	toolsQAction->setMenu(menu);
 
 	return true;
 }
 
 void obs_module_unload()
 {
-        delete settings;
+	delete settings;
 
 	blog(LOG_INFO, "Goodbye!");
 }
