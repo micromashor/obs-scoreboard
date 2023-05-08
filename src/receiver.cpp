@@ -293,7 +293,9 @@ void Receiver::processDatagram(const std::string_view &data)
 			begin = it;
 			break;
 		case ETB:
-			std::string_view frame(data.data() + (begin - data.begin()), it - begin);
+			std::string_view frame(data.data() +
+						       (begin - data.begin()),
+					       it - begin);
 			const char *error = processFrame(frame);
 
 			if (!error) {
