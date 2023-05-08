@@ -1,0 +1,4 @@
+baseURL = 'https://obs-scoreboard.micromashor.com/'
+languageCode = 'en-us'
+title = 'OBS-Scoreboard Docs'
+theme = "paper"
