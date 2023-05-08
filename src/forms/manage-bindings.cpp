@@ -74,7 +74,7 @@ void ManageBindings::addClicked()
 	redraw();
 
 	// select the current row
-        int newRowIndex = static_cast<int>(receiver->bindings.size() - 1);
+	int newRowIndex = static_cast<int>(receiver->bindings.size() - 1);
 	ui->bindingList->setCurrentRow(newRowIndex);
 	rowChanged(newRowIndex);
 }
