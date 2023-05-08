@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.21)
 
-project(obs-scoreboard VERSION 1.0.0)
+project(obs-scoreboard VERSION 1.0.2)
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 
 set(PLUGIN_AUTHOR "Eric Johnson")
@@ -13,8 +13,10 @@ set(LINUX_MAINTAINER_EMAIL "micromashor@gmail.com")
 
 # Add your custom source files here - header files are optional and only required for visibility
 # e.g. in Xcode or Visual Studio
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/obs-scoreboard.cpp src/forms/settings.cpp
-                                             src/forms/help-about.cpp)
+target_sources(
+  ${CMAKE_PROJECT_NAME}
+  PRIVATE src/obs-scoreboard.cpp src/forms/settings.cpp src/forms/help-about.cpp
+          src/forms/manage-bindings.cpp src/forms/configure-binding.cpp src/receiver.cpp)
 
 # Import libobs as main plugin dependency
 find_package(libobs REQUIRED)
@@ -23,8 +25,8 @@ include(cmake/ObsPluginHelpers.cmake)
 find_package(obs-frontend-api REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE OBS::obs-frontend-api)
 
-find_qt(COMPONENTS Widgets Core)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets)
+find_qt(COMPONENTS Widgets Core Network)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Qt::Core Qt::Widgets Qt::Network)
 set_target_properties(
   ${CMAKE_PROJECT_NAME}
   PROPERTIES AUTOMOC ON

@@ -23,8 +23,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QAction>
 #include <QMenu>
 
+#include "receiver.hpp"
 #include "forms/settings.hpp"
 #include "forms/help-about.hpp"
+#include "forms/manage-bindings.hpp"
+#include "forms/configure-binding.hpp"
 
 #include "plugin-macros.generated.h"
 
@@ -34,6 +37,9 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 Settings *settings;
 HelpAbout *helpAbout;
+ManageBindings *bindings;
+ConfigureBinding *config;
+Receiver *receiver;
 
 const char *obs_module_name()
 {
@@ -53,9 +59,13 @@ bool obs_module_load()
 	if (!mainWindow)
 		return true;
 
+	receiver = new Receiver();
+
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	settings = new Settings(mainWindow);
 	helpAbout = new HelpAbout(mainWindow);
+	bindings = new ManageBindings(mainWindow);
+	config = new ConfigureBinding(mainWindow);
 	obs_frontend_pop_ui_translation();
 
 	QMenu *menu = new QMenu(T("OBSScoreboard.Menu"), mainWindow);
@@ -70,6 +80,12 @@ bool obs_module_load()
 	QObject::connect(helpAction, &QAction::triggered, helpAbout,
 			 &HelpAbout::toggleVisible);
 	menu->addAction(helpAction);
+
+	QAction *bindingsAction =
+		new QAction(T("OBSScoreboard.Menu.Bindings"), menu);
+	QObject::connect(bindingsAction, &QAction::triggered, bindings,
+			 &ManageBindings::toggleVisible);
+	menu->addAction(bindingsAction);
 
 	QAction *toolsQAction = (QAction *)obs_frontend_add_tools_menu_qaction(
 		T("OBSScoreboard.Menu"));

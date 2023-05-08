@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ScoreboardSettings</class>
- <widget class="QDialog" name="ScoreboardSettings">
+ <class>ManageBindings</class>
+ <widget class="QDialog" name="ManageBindings">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>487</height>
+    <width>586</width>
+    <height>455</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>OBSScoreboard.ManageBindings</string>
+   <string>OBSScoreboard.Bindings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -51,26 +51,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="bindingUpButton">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="themeID" stdset="0">
-        <string notr="true">upArrowIconSmall</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="bindingDownButton">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="themeID" stdset="0">
-        <string notr="true">downArrowIconSmall</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -86,14 +66,14 @@
      <item>
       <widget class="QPushButton" name="editButton">
        <property name="text">
-        <string>OBSScoreboard.Edit</string>
+        <string>OBSScoreboard.Bindings.Edit</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="renameButton">
        <property name="text">
-        <string>OBSScoreboard.Rename</string>
+        <string>OBSScoreboard.Bindings.Rename</string>
        </property>
       </widget>
      </item>
@@ -116,7 +96,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ScoreboardSettings</receiver>
+   <receiver>ManageBindings</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -132,7 +112,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ScoreboardSettings</receiver>
+   <receiver>ManageBindings</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

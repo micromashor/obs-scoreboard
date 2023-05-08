@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ScoreboardSettings</class>
- <widget class="QDialog" name="ScoreboardSettings">
+ <class>ConfigureBinding</class>
+ <widget class="QDialog" name="ConfigureBinding">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>573</width>
-    <height>468</height>
+    <height>375</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,22 +15,22 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="enableCheckbox">
      <property name="text">
-      <string>OBSSCoreboard.Bindings.Enable</string>
+      <string>OBSScoreboard.Binding.Enable</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="inputSettings">
      <property name="title">
-      <string>OBSScoreboard.Bindings.InputSettings</string>
+      <string>OBSScoreboard.Binding.InputSettings</string>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>OBSScoreboard.Bindings.ItemNo</string>
+         <string>OBSScoreboard.Binding.ItemNo</string>
         </property>
        </widget>
       </item>
@@ -44,7 +44,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>OBSScoreboard.Bindings.Length</string>
+         <string>OBSScoreboard.Binding.Length</string>
         </property>
        </widget>
       </item>
@@ -61,20 +61,20 @@
    <item>
     <widget class="QGroupBox" name="outputSettings">
      <property name="title">
-      <string>OBSScoreboard.Bindings.OutputSettings</string>
+      <string>OBSScoreboard.Binding.OutputSettings</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="1">
        <widget class="QPushButton" name="refreshSourceListButton">
         <property name="text">
-         <string>OBSScoreboard.Bindings.RefreshSourceList</string>
+         <string>OBSScoreboard.Binding.RefreshSourceList</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>OBSScoreboard.Bindings.Source</string>
+         <string>OBSScoreboard.Binding.Source</string>
         </property>
        </widget>
       </item>
@@ -84,7 +84,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>OBSScoreboard.Bindings.Prop</string>
+         <string>OBSScoreboard.Binding.Prop</string>
         </property>
        </widget>
       </item>
@@ -95,65 +95,23 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>OBSScoreboard.Bindings.UseAs</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="useAsComboBox">
+       <widget class="QCheckBox" name="trimStrCheckbox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>OBSScoreboard.Binding.TrimStr</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QCheckBox" name="trimStrCheckbox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>OBSScoreboard.Bindings.TrimStr</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
        <widget class="QCheckBox" name="invertBoolCheckbox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
-         <string>OBSScoreboard.Bindings.InvertBool</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>OBSScoreboard.Bindings.IfTrue</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="switchIfTrueBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>OBSScoreboard.Bindings.IfFalse</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="switchIfFalseBox">
-        <property name="enabled">
-         <bool>false</bool>
+         <string>OBSScoreboard.Binding.InvertBool</string>
         </property>
        </widget>
       </item>
@@ -177,7 +135,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ScoreboardSettings</receiver>
+   <receiver>ConfigureBinding</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -193,7 +151,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ScoreboardSettings</receiver>
+   <receiver>ConfigureBinding</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

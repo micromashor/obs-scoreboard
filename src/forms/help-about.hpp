@@ -23,6 +23,8 @@ public:
 
 private slots:
 
+	void counterChanged(int which, unsigned long long newval);
+
 private:
 	Ui::HelpAbout *ui;
 };

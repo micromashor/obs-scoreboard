@@ -1,10 +1,10 @@
 {
         "dependencies": {
             "obs-studio": {
-                "version": "29.0.2",
+                "version": "29.1.0",
                 "repository": "https://github.com/obsproject/obs-studio.git",
                 "branch": "master",
-                "hash": "0fb8bb4b1e18ee1c870c48d35ab5b598af3b59e9"
+                "hash": "0c0ec90eac804c99669d9ff835bbef3c843558e0"
             },
             "prebuilt": {
                 "version": "2023-04-12",
@@ -80,7 +80,7 @@
             }
         },
         "name": "obs-scoreboard",
-        "version": "1.0.0",
+        "version": "1.0.2",
         "author": "Eric Johnson",
         "email": "micromashor@gmail.com"
     }

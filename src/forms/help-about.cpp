@@ -1,13 +1,14 @@
-#ifndef Help_H
-#define Help_H
-
 #include <obs.hpp>
 
 #include "help-about.hpp"
 
+#include "../receiver.hpp"
+
 #include "ui_help-about.h"
 
 #include "../plugin-macros.generated.h"
+
+extern Receiver *receiver;
 
 HelpAbout::HelpAbout(QWidget *parent) : QDialog(parent), ui(new Ui::HelpAbout)
 {
@@ -15,6 +16,9 @@ HelpAbout::HelpAbout(QWidget *parent) : QDialog(parent), ui(new Ui::HelpAbout)
 
 	// Remove the ? button on dialogs on Windows
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+	connect(receiver, &Receiver::counterChanged, this,
+		&HelpAbout::counterChanged);
 }
 
 HelpAbout::~HelpAbout()
@@ -28,30 +32,24 @@ void HelpAbout::toggleVisible(bool checked)
 	setVisible(!isVisible());
 }
 
-void HelpAbout::incrementCounter(int which)
+void HelpAbout::counterChanged(int which, unsigned long long newval)
 {
-	QLabel *label = nullptr;
+	QLabel *counter = nullptr;
 
 	switch (which) {
-	case HelpAbout::counters::packetsReceived:
-		label = ui->packetsReceived;
+	case COUNTER_PACKETS:
+		counter = ui->packetsReceived;
 		break;
-	case HelpAbout::counters::framesReceived:
-		label = ui->framesReceived;
+	case COUNTER_FRAMES:
+		counter = ui->framesReceived;
 		break;
-	case HelpAbout::counters::framesDropped:
-		label = ui->framesDropped;
+	case COUNTER_ERRORS:
+		counter = ui->framesDropped;
 		break;
 	}
 
-	if (!label) {
-		blog(LOG_ERROR, "unknown counter (id = %d)", which);
+	if (!counter)
 		return;
-	}
 
-	auto currentVal = label->text().toULongLong();
-	currentVal++;
-	label->setText(QString::number(currentVal));
+	counter->setText(QString::number(newval));
 }
-
-#endif // Help_H
