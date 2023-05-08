@@ -12,3 +12,6 @@
 ui_*.h
 *.generated.*
 **/.Brewfile.lock.json
+
+# ignore docs files
+docs/public
