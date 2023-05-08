@@ -262,7 +262,7 @@ void Receiver::socketReady()
 
 		processDatagram(data);
 
-		delete buf;
+		delete[] buf;
 	}
 
 	// no need to update sources until we've dealt with all pending packets
